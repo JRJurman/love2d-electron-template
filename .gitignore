@@ -1,4 +1,8 @@
 # love.js dependency
 sample/node_modules
 sample/sample
-sample/sample.love
+sample/sample.zip
+
+# copied assets for the sample project
+sample/index.js
+sample/template.html

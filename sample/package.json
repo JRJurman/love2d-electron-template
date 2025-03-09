@@ -2,9 +2,8 @@
   "name": "love2d-electron-sample",
   "scripts": {
     "start": "electron sample",
-    "build": "zip sample.zip main.lua && love.js sample.zip sample -t sample -c",
-    "build:app-template": "cp ../index.js sample/index.js && cp ../template.html sample/index.html",
-    "postbuild": "npm run build:app-template"
+    "prebuild": "cp ../index.js index.js && cp ../template.html template.html",
+    "build": "../build.sh"
   },
   "dependencies": {
     "electron": "^35.0.0",

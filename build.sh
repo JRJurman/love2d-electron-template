@@ -6,5 +6,3 @@ love.js sample.zip sample -t sample -c
 
 # copy the template assets to the love.js project
 cp index.js sample/index.js && cp template.html sample/index.html
-
-#
