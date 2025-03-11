@@ -1,47 +1,44 @@
-const { app, BrowserWindow } = require('electron');
+const { app, BrowserWindow, protocol } = require('electron');
 const path = require('path');
-const http = require('http');
 const fs = require('fs');
 
-const PORT = 3000;
 const PUBLIC_DIR = path.join(__dirname);
 
-let server;
-let mainWindow;
+// Register `app://` as a privileged scheme
+protocol.registerSchemesAsPrivileged([
+    {
+        scheme: 'app',
+        privileges: {
+            standard: true, // Allows fetch(), XMLHttpRequest, and WebAssembly
+            secure: true,   // Treated as a secure origin (like HTTPS)
+            supportFetchAPI: true, // Enables Fetch API for app://
+            corsEnabled: true // Allows cross-origin requests (important for some assets)
+        }
+    }
+]);
 
 app.whenReady().then(() => {
-    // Create the static file server
-    server = http.createServer((req, res) => {
-        let filePath = path.join(PUBLIC_DIR, req.url === '/' ? '/index.html' : req.url);
+    // Register a custom protocol that handles different content types
+    protocol.handle('app', async (request) => {
+        // Extract file path correctly
+        let urlPath = new URL(request.url).pathname;
+        urlPath = decodeURIComponent(urlPath); // Handle encoded characters (e.g., spaces)
+        if (urlPath === '/') urlPath = '/index.html'; // Default to index.html
 
-        // Check if file exists
-        fs.access(filePath, fs.constants.F_OK, (err) => {
-            if (err) {
-                res.writeHead(404);
-                res.end('Not Found');
-                return;
-            }
+        let filePath = path.join(PUBLIC_DIR, urlPath);
 
-            // Read and serve the file
-            fs.readFile(filePath, (err, data) => {
-                if (err) {
-                    res.writeHead(500);
-                    res.end('Server Error');
-                    return;
-                }
-
-                res.writeHead(200, { 'Content-Type': getMimeType(filePath) });
-                res.end(data);
+        try {
+            return new Response(fs.readFileSync(filePath), {
+                headers: { 'Content-Type': getMimeType(filePath) }
             });
-        });
-    });
-
-    server.listen(PORT, () => {
-        console.log(`Static server running at http://localhost:${PORT}`);
+        } catch (err) {
+            console.error(`File not found: ${filePath}`);
+            return new Response('File Not Found', { status: 404 });
+        }
     });
 
     // Create the browser window
-    mainWindow = new BrowserWindow({
+    const mainWindow = new BrowserWindow({
         width: 800,
         height: 600,
         webPreferences: {
@@ -50,20 +47,11 @@ app.whenReady().then(() => {
         }
     });
 
-    // Load the local server URL
-    mainWindow.loadURL(`http://localhost:${PORT}`);
-
-    mainWindow.on('closed', () => {
-        mainWindow = null;
-    });
+    // Load the app using our custom protocol
+    mainWindow.loadURL('app:///index.html');
 });
 
-app.on('window-all-closed', () => {
-    if (server) server.close();
-    app.quit();
-});
-
-// Helper function to get MIME type
+// Helper function to determine MIME types
 function getMimeType(filePath) {
     const ext = path.extname(filePath).toLowerCase();
     const mimeTypes = {
