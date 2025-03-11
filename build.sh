@@ -1,8 +1,10 @@
-# build the .love package (a .zip)
-zip sample.zip -r *.lua
+PROJECT_NAME="$1"
 
-# run love.js on the project - this will create a new folder with the love.js assets
-love.js sample.zip sample -t sample -c
+# Build the .love package (a .zip)
+zip "$PROJECT_NAME.zip" -r *.lua
 
-# copy the template assets to the love.js project
-cp index.js sample/index.js && cp template.html sample/index.html
+# Run love.js on the project - this will create a new folder with the love.js assets
+npx love.js "$PROJECT_NAME.zip" "$PROJECT_NAME" -t "$PROJECT_NAME" -c
+
+# Copy the template assets to the love.js project
+cp index.js "$PROJECT_NAME/index.js" && cp template.html "$PROJECT_NAME/index.html"

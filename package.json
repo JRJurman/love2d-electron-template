@@ -1,0 +1,12 @@
+{
+  "name": "love2d-electron-template",
+  "version": "1.0.0",
+  "description": "Template for running a LÖVE / Love2d / love.js game in an electron window",
+  "main": "index.js",
+  "scripts": {
+    "prep-sample": "cp ./index.js sample/index.js && cp ./template.html sample/template.html && cp ./build.sh sample/build.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
