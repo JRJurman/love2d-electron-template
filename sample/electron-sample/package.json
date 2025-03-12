@@ -3,10 +3,12 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "start": "electron-forge start",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make:win32": "electron-forge make --skip-package --platform=win32",
+    "make:darwin": "electron-forge make --skip-package --platform=darwin",
+    "make:linux": "electron-forge make --skip-package --platform=linux",
+    "make": "npm run package && npm run make:win32 && npm run make:darwin && npm run make:linux"
   },
   "keywords": [],
   "author": "",

@@ -71,3 +71,5 @@ and making it run smoothly on other devices.
 ## Sample
 
 You can check out the sample project in the folder in this project, which has gone through all the above steps.
+
+This sample also includes a modified forge config and package.json, which you can use as reference if you want a general universal build.
