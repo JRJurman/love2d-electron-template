@@ -73,3 +73,14 @@ and making it run smoothly on other devices.
 You can check out the sample project in the folder in this project, which has gone through all the above steps.
 
 This sample also includes a modified forge config. If you are looking to do a Windows build, using GitHub Actions is an easy way to build that artifact.
+
+## Other Build Script Variations
+
+### Using a src folder
+
+If you have a folder with all your source code, update the line that builds the zip to be the following:
+
+```sh
+# Build the .love package (a .zip)
+cd src; zip "../$PROJECT_NAME.love" -r *; cd ..
+```
